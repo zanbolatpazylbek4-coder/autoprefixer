@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)https://janbolot.oshsu.kg/bilim/ -->
+<html lang="ky"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Билим Билет</title>
+    <script src="saved_resource"></script>
+    <link href="./Билим Билет_files/css2" rel="stylesheet">
+    <link rel="stylesheet" href="all.min.css">
+    <script>
+        // Настройка Tailwind для темного режима
+        tailwind.config = {
+            darkMode: 'class',
+        };
+        
+        // Инициализация темы до загрузки страницы (предотвращает мигание)
+        (function() {
+            const theme = localStorage.getItem('fc_theme') || 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+      <style>
+        /* Социалдык иконкалар стилдери (Жогорудагыдай эле калат) */
+        .social-fixed {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 9999;
+        }
+        .social-fixed a {
+            width: 50px;
+            height: 50px;
+            background: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            text-decoration: none;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: 0.3s ease;
+            animation: pulse 1.8s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%   { transform: scale(1); opacity: 0.7; }
+            50%  { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+        .social-fixed a.tg:hover { background: #2AABEE; color: #fff; }
+        .social-fixed a.insta:hover { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); color: #fff; }
+        .social-fixed a.yt:hover { background: #FF0000; color: #fff; }
+
+        /* 🔥 GOOGLE TRANSLATE СТИЛИ 🔥 */
+        #google_translate_element {
+            position: absolute;
+            top: 20px; /* Үстү жагына */
+            right: 20px;
+            z-index: 10000; /* Башка элементтердин үстүндө турушу үчүн */
+            border-radius: 8px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        /* Виджеттин ичиндеги элементтерди жашыруу (эгерде сиз жөнөкөй Dropdown кааласаңыз) */
+        .goog-te-gadget .goog-te-combo {
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+        }
+        .goog-te-gadget {
+            font-size: 0; /* "Select Language" текстин жашыруу */
+        }
+        /* Футер */
+.main-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #4f46e5;
+    color: #ccc;
+    margin-top: 40px;
+}
+
+/* Медиа суроолор (Мобилдик түзмөктөр үчүн) */
+@media (max-width: 768px) {
+    .main-header h1 {
+        font-size: 2em;
+    }
+    
+    .info-content {
+        flex-direction: column;
+    }
+    
+    .subject-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .subject-list li {
+        max-width: 90%;
+    }
+}
+        /* 🔥 GOOGLE TRANSLATE СТИЛИ 🔥 */
+#google_translate_element {
+    /* Сол жогорку бурчта дайыма катып туруу */
+    position: fixed;
+    width: 20%;
+    top: 70px; /* Жогорудан 50% ортого жакын */
+    left: 10px; /* Сол четинен 10px */
+    transform: translateY(-50%); /* Так ортого келтирүү */
+    z-index: 10000; 
+
+    /* Виджеттин фону жана көрүнүшү */
+    border-radius: 8px;
+    padding: 8px 10px;
+    background-color: rgba(255, 255, 255, 0.95); /* Бир аз тунук ак фон */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border: 1px solid #ccc; /* Жээк кошуу */
+}
+
+/* Виджеттин ичиндеги Dropdown стили */
+.goog-te-gadget .goog-te-combo {
+    border: none; /* Жээгин алып салуу */
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 16px; /* Чоңураак шрифт */
+    font-weight: bold;
+    color: #444;
+    background-color: #f0f0f0; /* Боз фон */
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.goog-te-gadget .goog-te-combo:hover {
+    background-color: #e0e0e0;
+}
+
+/* "Select Language" деген текстти жашыруу */
+.goog-te-gadget {
+    font-size: 0 !important; 
+    line-height: 0 !important; 
+}
+.goog-te-gadget font {
+    display: none !important;
+}
+
+/* Google'дун өзүнүн брендингин жана горизонталдуу сызыгын жашыруу (милдеттүү эмес, бирок эстетика үчүн) */
+.goog-logo-link {
+    display: none !important;
+}
+.goog-te-banner-container {
+    display: none !important;
+}
+body { top: 0 !important; }
+    </style>
+    <script src="marked.min.js.Без названия"></script>
+    <!-- DOMPurify for Security (XSS Prevention) -->
+    <script src="purify.min.js.Без названия"></script>
+    <link rel="stylesheet" href="styles.css">
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-5{bottom:1.25rem}.bottom-6{bottom:1.5rem}.left-6{left:1.5rem}.right-3{right:0.75rem}.right-5{right:1.25rem}.right-6{right:1.5rem}.top-0{top:0px}.top-3{top:0.75rem}.top-6{top:1.5rem}.z-30{z-index:30}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mr-2{margin-right:0.5rem}.mt-4{margin-top:1rem}.mt-8{margin-top:2rem}.ml-auto{margin-left:auto}.mr-4{margin-right:1rem}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-\[3\/2\]{aspect-ratio:3/2}.h-12{height:3rem}.h-16{height:4rem}.h-20{height:5rem}.h-8{height:2rem}.h-full{height:100%}.max-h-32{max-height:8rem}.max-h-\[400px\]{max-height:400px}.max-h-\[90vh\]{max-height:90vh}.max-h-full{max-height:100%}.min-h-screen{min-height:100vh}.min-h-\[320px\]{min-height:320px}.w-12{width:3rem}.w-20{width:5rem}.w-48{width:12rem}.w-8{width:2rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.max-w-lg{max-width:32rem}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.flex-grow{flex-grow:1}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.break-all{word-break:break-all}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-gray-100{--tw-border-opacity:1;border-color:rgb(243 244 246 / var(--tw-border-opacity, 1))}.border-gray-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-gray-300{--tw-border-opacity:1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255 / var(--tw-border-opacity, 1))}.border-indigo-200{--tw-border-opacity:1;border-color:rgb(199 210 254 / var(--tw-border-opacity, 1))}.border-purple-100{--tw-border-opacity:1;border-color:rgb(243 232 255 / var(--tw-border-opacity, 1))}.border-yellow-200{--tw-border-opacity:1;border-color:rgb(254 240 138 / var(--tw-border-opacity, 1))}.border-red-100{--tw-border-opacity:1;border-color:rgb(254 226 226 / var(--tw-border-opacity, 1))}.bg-gray-50{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-black\/60{background-color:rgb(0 0 0 / 0.6)}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-green-600{--tw-bg-opacity:1;background-color:rgb(22 163 74 / var(--tw-bg-opacity, 1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229 / var(--tw-bg-opacity, 1))}.bg-purple-50{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.bg-purple-600{--tw-bg-opacity:1;background-color:rgb(147 51 234 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-yellow-50{--tw-bg-opacity:1;background-color:rgb(254 252 232 / var(--tw-bg-opacity, 1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-indigo-500{--tw-gradient-from:#6366f1 var(--tw-gradient-from-position);--tw-gradient-to:rgb(99 102 241 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-purple-600{--tw-gradient-to:#9333ea var(--tw-gradient-to-position)}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pl-2{padding-left:0.5rem}.pr-2{padding-right:0.5rem}.pt-4{padding-top:1rem}.text-center{text-align:center}.font-sans{font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-indigo-700{--tw-text-opacity:1;color:rgb(67 56 202 / var(--tw-text-opacity, 1))}.text-purple-500{--tw-text-opacity:1;color:rgb(168 85 247 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-700{--tw-text-opacity:1;color:rgb(161 98 7 / var(--tw-text-opacity, 1))}.text-red-600{--tw-text-opacity:1;color:rgb(220 38 38 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.hover\:bg-gray-100:hover{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.hover\:bg-gray-200:hover{--tw-bg-opacity:1;background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))}.hover\:bg-gray-50:hover{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.hover\:bg-green-700:hover{--tw-bg-opacity:1;background-color:rgb(21 128 61 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-100:hover{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.hover\:bg-indigo-700:hover{--tw-bg-opacity:1;background-color:rgb(67 56 202 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-50:hover{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-700:hover{--tw-bg-opacity:1;background-color:rgb(126 34 206 / var(--tw-bg-opacity, 1))}.hover\:bg-white:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.hover\:bg-yellow-100:hover{--tw-bg-opacity:1;background-color:rgb(254 249 195 / var(--tw-bg-opacity, 1))}.hover\:bg-red-100:hover{--tw-bg-opacity:1;background-color:rgb(254 226 226 / var(--tw-bg-opacity, 1))}.hover\:text-gray-600:hover{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.hover\:text-indigo-600:hover{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.focus\:border-purple-500:focus{--tw-border-opacity:1;border-color:rgb(168 85 247 / var(--tw-border-opacity, 1))}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-indigo-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(99 102 241 / var(--tw-ring-opacity, 1))}.focus\:ring-purple-200:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(233 213 255 / var(--tw-ring-opacity, 1))}.dark\:border-gray-600:is(.dark *){--tw-border-opacity:1;border-color:rgb(75 85 99 / var(--tw-border-opacity, 1))}.dark\:border-gray-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(55 65 81 / var(--tw-border-opacity, 1))}.dark\:border-indigo-800:is(.dark *){--tw-border-opacity:1;border-color:rgb(55 48 163 / var(--tw-border-opacity, 1))}.dark\:border-purple-900\/30:is(.dark *){border-color:rgb(88 28 135 / 0.3)}.dark\:bg-gray-900:is(.dark *){--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity, 1))}.dark\:bg-gray-700:is(.dark *){--tw-bg-opacity:1;background-color:rgb(55 65 81 / var(--tw-bg-opacity, 1))}.dark\:bg-gray-700\/50:is(.dark *){background-color:rgb(55 65 81 / 0.5)}.dark\:bg-gray-800:is(.dark *){--tw-bg-opacity:1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.dark\:bg-indigo-900\/20:is(.dark *){background-color:rgb(49 46 129 / 0.2)}.dark\:bg-indigo-900\/30:is(.dark *){background-color:rgb(49 46 129 / 0.3)}.dark\:text-gray-100:is(.dark *){--tw-text-opacity:1;color:rgb(243 244 246 / var(--tw-text-opacity, 1))}.dark\:text-gray-200:is(.dark *){--tw-text-opacity:1;color:rgb(229 231 235 / var(--tw-text-opacity, 1))}.dark\:text-gray-300:is(.dark *){--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.dark\:text-gray-400:is(.dark *){--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.dark\:text-indigo-300:is(.dark *){--tw-text-opacity:1;color:rgb(165 180 252 / var(--tw-text-opacity, 1))}.dark\:text-indigo-400:is(.dark *){--tw-text-opacity:1;color:rgb(129 140 248 / var(--tw-text-opacity, 1))}.dark\:text-purple-400:is(.dark *){--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.dark\:text-gray-500:is(.dark *){--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.dark\:hover\:bg-gray-600:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(75 85 99 / var(--tw-bg-opacity, 1))}.dark\:hover\:bg-gray-700:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(55 65 81 / var(--tw-bg-opacity, 1))}.dark\:hover\:bg-gray-800:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(31 41 55 / var(--tw-bg-opacity, 1))}.dark\:hover\:bg-indigo-900\/50:hover:is(.dark *){background-color:rgb(49 46 129 / 0.5)}.dark\:hover\:text-gray-300:hover:is(.dark *){--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.dark\:hover\:text-indigo-400:hover:is(.dark *){--tw-text-opacity:1;color:rgb(129 140 248 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:block{display:block}.sm\:inline{display:inline}}@media (min-width: 768px){.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:text-left{text-align:left}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}}</style></head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans min-h-screen flex flex-col transition-colors duration-200">
+  
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 shadow-sm transition-colors duration-200">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="app.resetToSetup()">
+                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md">JK</div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100 hidden sm:block">Билим <span class="text-purple-500 dark:text-purple-400 font-normal">Билет</span></h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <!-- Language Selector -->
+                <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 mr-2">
+                    <button onclick="ui.setLanguage(&#39;ky&#39;)" class="lang-btn px-2 py-1 text-xs font-bold rounded hover:bg-white dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300 text-gray-600" data-lang="ky">KZ</button>
+                    <button onclick="ui.setLanguage(&#39;ru&#39;)" class="lang-btn px-2 py-1 text-xs font-bold rounded dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300 bg-indigo-600 text-white" data-lang="ru">RU</button>
+                    <button onclick="ui.setLanguage(&#39;en&#39;)" class="lang-btn px-2 py-1 text-xs font-bold rounded hover:bg-white dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300 text-gray-600" data-lang="en">EN</button>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button onclick="ui.toggleTheme()" class="text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Toggle Theme" aria-label="Toggle Theme">
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg id="theme-icon-dark" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+
+                <!-- API Settings -->
+                <button onclick="ui.toggleApiKeyModal()" class="text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="API" aria-label="API Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+
+                <!-- Download Actions -->
+           
+                <!-- Share -->
+                <button onclick="app.shareDeck()" class="flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors border border-indigo-200" aria-label="Share">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                    <span class="hidden sm:inline" data-i18n="share">Поделиться</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 py-8">
+          <div class="social-fixed">
+        <a href="https://t.me/+4C0Wq9DJS3RlMzAy" target="_blank" class="tg"><i class="fab fa-telegram-plane"></i></a>
+        <a href="https://instagram.com/joni.kalbaev" target="_blank" class="insta"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@jk_solo" target="_blank" class="yt"><i class="fab fa-youtube"></i></a>
+        <a href="https://janbolot.oshsu.kg/oiun/pro" target="_blank" class="yt"><i class="fas fa-star"></i></a>
+    </div>
+        <!-- Welcome Block -->
+        <div id="welcome-block" class="hidden text-center py-10 fade-in">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4" data-i18n="welcome_title">Добро пожаловать!</h2>
+            <p class="text-gray-500 mb-8 max-w-md mx-auto" data-i18n="welcome_desc">Создайте свои карточки или загрузите готовый набор, чтобы начать.</p>
+        </div>
+
+   <div id="setup-view" class="fade-in max-w-3xl mx-auto">
+    <div class="flex bg-white dark:bg-gray-800 p-1 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 overflow-x-auto transition-colors duration-200">
+        
+        <button onclick="ui.switchTab(&#39;editor&#39;)" class="tab-btn flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 dark:bg-gray-700 text-gray-600 dark:text-gray-400" data-tab="editor">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span data-i18n="tab_editor">Редактор</span>
+        </button>
+
+        <button onclick="ui.switchTab(&#39;ai&#39;)" class="tab-btn flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400" data-tab="ai">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 21l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+            AI
+        </button>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm min-h-[320px] transition-colors duration-200">
+        
+        <div id="tab-editor" class="tab-content flex flex-col h-full hidden">
+            <div class="flex justify-between items-center mb-4"><div class="flex-1 mr-4"><input id="editorSearchInput" type="text" placeholder="Поиск карточек..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200"></div>
+                <button id="clearAllBtn" class="text-sm bg-red-50 text-red-600 border border-red-100 px-3 py-1.5 rounded-lg hover:bg-red-100 flex items-center gap-1 transition-colors mr-2 ml-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Удалить все</span></button><button onclick="app.openAddCardModal()" class="text-sm bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 flex items-center gap-1 transition-colors" aria-label="Add Card">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span data-i18n="btn_add">Добавить</span>
+                </button>
+            </div>
+            <div id="editorList" class="flex-grow overflow-y-auto max-h-[400px] space-y-2 pr-2 custom-scroll"><div class="text-center text-gray-400 dark:text-gray-500 py-8">Список пуст.</div></div>
+        </div>
+
+        <div id="tab-ai" class="tab-content hidden space-y-6 text-center py-6">
+            <div class="w-20 h-20 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-2 border border-purple-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 21l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">AI Генератор</h3>
+            <div class="relative max-w-sm mx-auto">
+                <input type="text" id="aiTopic" placeholder="Мисалы: Dart негиздери" class="w-full p-3.5 border border-gray-300 dark:border-gray-600 rounded-xl text-center outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+            </div>
+            <button id="aiBtn" onclick="app.handleAIGenerate()" class="w-full max-w-sm mx-auto py-3 bg-purple-600 text-white font-medium rounded-xl hover:bg-purple-700 flex justify-center gap-2 items-center shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z"></path></svg>
+                <span data-i18n="btn_create">Создать</span>
+            </button>
+            <p id="aiStatus" class="text-sm text-gray-500 hidden animate-pulse" data-i18n="ai_generating">Генерация вопросов...</p>
+        </div>
+
+    </div>
+
+    <div id="deckStatus" class="mt-8 space-y-4">
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm transition-colors duration-200">
+            <div class="text-center md:text-left">
+                <p class="text-lg font-bold text-gray-900 dark:text-gray-100" data-i18n="deck_ready">Набор готов!</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400"><span data-i18n="cards_count">Количество карт</span>: <span id="cardCount" class="font-bold text-indigo-600 dark:text-indigo-400">10</span></p>
+            </div>
+            
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button onclick="app.startStudy()" class="flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    <span data-i18n="btn_study">Учить</span>
+                </button>
+                <button onclick="app.startExam()" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                    <span data-i18n="btn_exam">Экзамен</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+        <!-- VIEW: STUDY (Classic) -->
+        <div id="study-view" class="hidden h-full flex flex-col items-center relative fade-in max-w-3xl mx-auto">
+            <div class="w-full flex justify-between items-center mb-6 text-sm text-gray-500 dark:text-gray-400">
+                <span id="progressText" class="font-mono bg-white dark:bg-gray-800 px-3 py-1 rounded-md border dark:border-gray-700 shadow-sm text-gray-900 dark:text-gray-100 transition-colors duration-200">1 / 10</span>
+                <div class="flex gap-2">
+                    <button onclick="app.shuffleCards()" class="p-2 bg-white dark:bg-gray-800 border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full shadow-sm transition-colors duration-200" title="Перемешать" aria-label="Shuffle Cards">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    </button>
+                    <button onclick="app.resetToSetup()" class="p-2 bg-white dark:bg-gray-800 border dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full shadow-sm transition-colors duration-200" title="Выход" aria-label="Exit Study Mode">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full aspect-[3/2] perspective-1000 cursor-pointer group mb-8" onclick="app.flipCard()">
+                <div id="cardInner" class="card-inner relative w-full h-full transform-style-3d shadow-xl rounded-2xl">
+                    <div class="absolute w-full h-full backface-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl flex flex-col items-center justify-center p-8 text-center transition-colors duration-200">
+                        <span class="absolute top-6 left-6 text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded" data-i18n="label_question">Вопрос</span>
+                        <div class="overflow-y-auto max-h-full w-full flex items-center justify-center custom-scroll"><p id="cardFront" class="text-xl md:text-3xl font-medium text-gray-800 dark:text-gray-100 leading-snug">Front</p></div>
+                        <div class="absolute bottom-6 flex gap-2" onclick="event.stopPropagation()">
+                            <button onclick="app.askAI(&#39;hint&#39;)" class="text-xs flex items-center gap-1.5 text-yellow-700 bg-yellow-50 hover:bg-yellow-100 px-4 py-2 rounded-full border border-yellow-200 font-medium" data-i18n="btn_hint">Подсказка</button>
+                        </div>
+                    </div>
+                    <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-2xl flex flex-col items-center justify-center p-8 text-center transition-colors duration-200">
+                        <span class="absolute top-6 left-6 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase bg-white dark:bg-gray-800 px-2 py-1 rounded border border-indigo-100 dark:border-indigo-800" data-i18n="label_answer">Ответ</span>
+                        <div class="overflow-y-auto max-h-full w-full flex items-center justify-center custom-scroll"><p id="cardBack" class="text-lg md:text-xl text-gray-800 dark:text-gray-100 leading-relaxed">Back</p></div>
+                        <div class="absolute bottom-6 right-6" onclick="event.stopPropagation()">
+                            <button onclick="app.askAI(&#39;explain&#39;)" class="flex items-center gap-1.5 px-4 py-2 bg-white text-purple-600 text-xs font-bold rounded-full shadow-sm border border-purple-100 hover:bg-purple-50" data-i18n="btn_explain">Объяснить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aiResponseBox" class="hidden w-full bg-white dark:bg-gray-800 border border-purple-100 dark:border-purple-900/30 rounded-2xl p-5 shadow-lg mb-8 relative animate-slide-up transition-colors duration-200">
+                <button onclick="ui.hideAIResponse()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1" aria-label="Close AI"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                <h4 class="flex items-center gap-2 text-sm font-bold text-purple-700 dark:text-purple-400 mb-3 uppercase tracking-wide">Gemini AI Teacher</h4>
+                <div id="aiResponseText" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed markdown-body"></div>
+            </div>
+
+            <div class="flex items-center justify-center gap-6">
+                <button onclick="app.prevCard()" class="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-full shadow-sm hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200" aria-label="Previous Card"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                <button onclick="app.flipCard()" class="px-8 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-lg hover:bg-indigo-700 w-48 select-none">
+                    <span data-i18n="btn_show_answer">Показать ответ</span>
+                </button>
+                <button onclick="app.nextCard()" class="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-full shadow-sm hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200" aria-label="Next Card"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            </div>
+        </div>
+
+        <!-- VIEW: EXAM -->
+        <div id="exam-view" class="hidden h-full flex flex-col fade-in">
+            <!-- Controls Toolbar -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="text-center md:text-left">
+                    <h2 class="text-xl font-bold text-gray-800" data-i18n="exam_title">Экзамен</h2>
+                    <p class="text-gray-500 text-sm" data-i18n="exam_subtitle">Выберите билет.</p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 p-1 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400 pl-2" data-i18n="label_count">Кол-во:</span>
+                        <select id="examCountSelect" class="bg-transparent text-sm font-semibold text-gray-800 dark:text-gray-200 outline-none cursor-pointer" onchange="app.reshuffleExam()">
+                            <option value="10">10</option>
+                            <option value="20" selected="">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="-1">All</option>
+                        </select>
+                    </div>
+
+                    <button onclick="app.reshuffleExam()" class="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-medium rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 5.5A10 10 0 1 1 11.26 2.8L21.5 2"></path></svg>
+                        <span data-i18n="btn_shuffle">Перемешать</span>
+                    </button>
+                    
+                    <button onclick="app.resetToSetup()" class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                        <span data-i18n="btn_exit">Выход</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="examGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+        </div>
+
+    </main>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- Modal: API Key -->
+    <div id="apiModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 w-full max-w-md animate-scale-in transition-colors duration-200">
+            <h3 class="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100" data-i18n="api_title">Настройки API</h3>
+            <input type="password" id="userApiKey" placeholder="AIzaSy..." class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+            <div class="flex justify-end gap-2">
+                <button onclick="ui.toggleApiKeyModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg" data-i18n="btn_cancel">Отмена</button>
+                <button onclick="app.saveApiKey()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg" data-i18n="btn_save">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Share -->
+    <div id="shareModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 w-full max-w-md animate-scale-in transition-colors duration-200">
+            <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100" data-i18n="share_title">Ссылка</h3>
+            <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg break-all text-xs font-mono mb-4 max-h-32 overflow-y-auto text-gray-900 dark:text-gray-100 transition-colors duration-200" id="shareUrlText"></div>
+            <div class="flex justify-end gap-2">
+                <button onclick="document.getElementById(&#39;shareModal&#39;).classList.add(&#39;hidden&#39;)" class="px-4 py-2 text-gray-600" data-i18n="btn_close">Закрыть</button>
+                <button onclick="ui.copyShareLink()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg" data-i18n="btn_copy">Копировать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Editor -->
+    <div id="editorModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 w-full max-w-lg animate-scale-in flex flex-col max-h-[90vh] transition-colors duration-200">
+            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100">Карточка</h3>
+            
+            <div class="space-y-4 overflow-y-auto flex-grow px-1">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" data-i18n="label_question">Вопрос</label>
+                    <textarea id="editQuestion" rows="3" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" data-i18n="label_answer">Ответ</label>
+                    <textarea id="editAnswer" rows="5" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 transition-colors duration-200"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-100">
+                <button onclick="ui.toggleEditorModal(false)" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium" data-i18n="btn_cancel">Отмена</button>
+                <button onclick="app.saveEditorCard()" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium" data-i18n="btn_save">Сохранить</button>
+            </div>
+        </div>
+    </div>
+ <footer class="main-footer">
+        <p>© 2025 Билим билеттери. Бардык укуктар корголгон. | Долбоордун автору: <a style="color:yellow;" href="https://instagram.com/joni.kalbaev">Жанболот Калбаев</a> </p>
+    </footer>
+    <script src="script.js.Без названия"></script>
+
+
+    
+       
+ 
+
+</body></html>

@@ -1,0 +1,565 @@
+/* FlashCards AI - Улучшенные стили
+   Исправления:
+   - Конфликт hover/zoom
+   - Улучшенная читаемость
+   - Оптимизация анимаций
+*/
+
+/* =========================================
+   1. 3D FLIP ANIMATIONS
+   ========================================= */
+
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.transform-style-3d {
+    transform-style: preserve-3d;
+}
+
+.backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+
+.card-inner {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.is-flipped {
+    transform: rotateY(180deg);
+}
+
+/* =========================================
+   2. EXAM MODE
+   ========================================= */
+
+.exam-ticket {
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform-origin: center center;
+    word-wrap: break-word;
+}
+
+.exam-ticket.is-flipped {
+    transform: rotateY(180deg);
+}
+
+/* Hover эффекты ТОЛЬКО для НЕзумнутых карточек */
+.perspective-1000:not(.is-zoomed-fixed):hover .exam-ticket { 
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.perspective-1000:not(.is-zoomed-fixed):hover .exam-ticket.is-flipped { 
+    transform: rotateY(180deg);
+}
+
+/* Зумнутая карточка: отключаем hover трансформации */
+.is-zoomed-fixed .exam-ticket {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3) !important;
+    transform: none !important;
+}
+
+.is-zoomed-fixed .exam-ticket.is-flipped {
+    transform: rotateY(180deg) !important;
+}
+
+/* Увеличение текста в зуме */
+.is-zoomed-fixed .exam-text {
+    font-size: 1.35rem !important;
+    line-height: 1.65;
+}
+
+@media (max-width: 640px) {
+    .is-zoomed-fixed .exam-text {
+        font-size: 1.15rem !important;
+    }
+}
+
+/* =========================================
+   15. EXAM ZOOM MODAL IMPROVEMENTS
+   ========================================= */
+
+/* Улучшенное позиционирование для zoom модалки */
+#exam-zoom-overlay .card-inner {
+    width: 100%;
+    height: 100%;
+}
+
+/* Улучшенное центрирование текста в zoom модалке */
+#exam-zoom-overlay .custom-scroll {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+#exam-zoom-overlay .markdown-body.text-center {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#exam-zoom-overlay .markdown-body.text-center p {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 90%;
+}
+
+#exam-zoom-overlay .markdown-body.text-center ul,
+#exam-zoom-overlay .markdown-body.text-center ol {
+    display: inline-block;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Улучшенный padding для zoom карточки */
+#exam-zoom-overlay .card-inner > div {
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    #exam-zoom-overlay .card-inner > div {
+        padding: 1.5rem;
+    }
+    
+    #exam-zoom-overlay .markdown-body {
+        font-size: 0.9rem;
+    }
+}
+
+/* =========================================
+   3. SMART TEXT SCROLLING
+   ========================================= */
+
+.custom-scroll {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important; 
+    height: 100%;
+    overflow-y: auto;
+    padding: 0 6px;
+}
+
+.custom-scroll p {
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 100%;
+}
+
+/* Webkit Scrollbar */
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Firefox Scrollbar */
+.custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+}
+
+/* =========================================
+   4. MARKDOWN STYLING
+   ========================================= */
+
+.markdown-body {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #374151;
+}
+
+.markdown-body p {
+    margin-bottom: 0.85em;
+}
+
+.markdown-body p:last-child {
+    margin-bottom: 0;
+}
+
+.markdown-body strong {
+    font-weight: 600;
+    color: #4338ca;
+}
+
+.markdown-body em {
+    font-style: italic;
+    color: #6b7280;
+}
+
+.markdown-body code {
+    background-color: #f3f4f6;
+    padding: 0.15rem 0.45rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9em;
+    color: #db2777;
+    border: 1px solid #e5e7eb;
+}
+
+.markdown-body pre {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    padding: 1.1rem;
+    border-radius: 0.6rem;
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    font-size: 0.88em;
+    line-height: 1.5;
+}
+
+.markdown-body pre code {
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font-size: 1em;
+}
+
+.markdown-body ul, .markdown-body ol {
+    margin-left: 1.5em;
+    margin-bottom: 0.85em;
+}
+
+.markdown-body li {
+    margin-bottom: 0.4em;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    font-weight: 700;
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+    color: #111827;
+}
+
+.markdown-body h1 { font-size: 1.5em; }
+.markdown-body h2 { font-size: 1.3em; }
+.markdown-body h3 { font-size: 1.15em; }
+
+/* Центрирование текста в markdown для ответов */
+.markdown-body.text-center {
+    text-align: center;
+}
+
+.markdown-body.text-center p,
+.markdown-body.text-center ul,
+.markdown-body.text-center ol {
+    text-align: center;
+}
+
+.markdown-body.text-center ul,
+.markdown-body.text-center ol {
+    display: inline-block;
+    text-align: left;
+}
+
+/* =========================================
+   5. ANIMATIONS
+   ========================================= */
+
+.fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes scaleIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* =========================================
+   6. TAB NAVIGATION
+   ========================================= */
+
+.tab-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.tab-btn.bg-white {
+    background-color: #ffffff;
+    border-bottom: 3px solid #6366f1;
+    border-color: #e0e7ff;
+    border-bottom-color: #6366f1;
+    box-shadow: 0 4px 15px -3px rgba(99, 102, 241, 0.25), 
+                0 2px 4px -1px rgba(0,0,0,0.05);
+    transform: translateY(-2px);
+    font-weight: 700;
+    z-index: 10;
+}
+
+.tab-btn:not(.bg-white):hover {
+    background-color: rgba(243, 244, 246, 0.8);
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   7. UTILITY CLASSES
+   ========================================= */
+
+/* Плавные переходы для всех интерактивных элементов */
+button, a, input, textarea, select {
+    transition: all 0.2s ease;
+}
+
+/* Focus states для accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
+
+/* Анимация загрузки */
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Toast уведомления (плавное появление/исчезновение) */
+.fixed.bottom-4.right-4 {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* =========================================
+   8. RESPONSIVE IMPROVEMENTS
+   ========================================= */
+
+/* На мобильных устройствах увеличиваем зоны нажатия */
+@media (max-width: 640px) {
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .exam-ticket {
+        font-size: 0.9rem;
+    }
+    
+    /* Увеличиваем кнопки в exam mode */
+    .exam-ticket button {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* На планшетах оптимизируем сетку */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #examGrid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* =========================================
+   9. PRINT STYLES (бонус)
+   ========================================= */
+
+@media print {
+    header,
+    button,
+    .no-print {
+        display: none !important;
+    }
+    
+    .card-inner,
+    .exam-ticket {
+        page-break-inside: avoid;
+    }
+    
+    body {
+        background: white !important;
+    }
+}
+
+/* =========================================
+   10. ACCESSIBILITY IMPROVEMENTS
+   ========================================= */
+
+/* Уменьшенная анимация для пользователей с vestibular disorders */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .card-inner,
+    .exam-ticket {
+        transition: none !important;
+    }
+}
+
+/* =========================================
+   14. DARK MODE CUSTOM STYLES
+   ========================================= */
+
+/* Markdown body в темной теме */
+.dark .markdown-body {
+    color: #e5e7eb;
+}
+
+.dark .markdown-body strong {
+    color: #818cf8;
+}
+
+.dark .markdown-body em {
+    color: #9ca3af;
+}
+
+.dark .markdown-body code {
+    background-color: #374151;
+    color: #f472b6;
+    border-color: #4b5563;
+}
+
+.dark .markdown-body pre {
+    background-color: #111827;
+    color: #f3f4f6;
+}
+
+.dark .markdown-body h1,
+.dark .markdown-body h2,
+.dark .markdown-body h3 {
+    color: #f9fafb;
+}
+
+/* Scrollbar в темной теме */
+.dark .custom-scroll::-webkit-scrollbar-thumb {
+    background: #4b5563;
+}
+
+.dark .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+.dark .custom-scroll {
+    scrollbar-color: #4b5563 transparent;
+}
+
+/* Tab navigation в темной теме */
+.dark .tab-btn.bg-white {
+    background-color: #1f2937;
+    border-color: #374151;
+    border-bottom-color: #6366f1;
+}
+
+.dark .tab-btn:not(.bg-white):hover {
+    background-color: rgba(31, 41, 55, 0.8);
+}
+
+/* =========================================
+   11. PERFORMANCE OPTIMIZATIONS
+   ========================================= */
+
+/* Используем GPU acceleration для анимаций */
+.card-inner,
+.exam-ticket,
+.tab-btn,
+button {
+    will-change: transform;
+}
+
+/* Ограничиваем will-change только для активных элементов */
+.card-inner:not(:hover),
+.exam-ticket:not(:hover) {
+    will-change: auto;
+}
+
+/* =========================================
+   12. FIX: Предотвращаем переполнение текста
+   ========================================= */
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.whitespace-pre-wrap {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Для длинных слов без пробелов */
+.break-words {
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* =========================================
+   13. SEARCH INPUT STYLING
+   ========================================= */
+
+#editorSearchInput {
+    transition: all 0.2s ease;
+}
+
+#editorSearchInput:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
