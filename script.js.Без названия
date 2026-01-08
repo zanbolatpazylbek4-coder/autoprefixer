@@ -1,0 +1,1473 @@
+/**
+ * FlashCards AI - Core Logic
+ * Features: 
+ * - Multi-language (Ky/Ru/En)
+ * - Auto-save to LocalStorage
+ * - CSV/JSON Import/Export
+ * - AI Generation (Gemini)
+ * - Study & Exam Modes
+ * - Security: XSS Prevention (DOMPurify, textContent)
+ */
+
+// --- CONFIGURATION ---
+const API_ENDPOINT = "api.php"; 
+
+const STORAGE_KEYS = {
+    CARDS: 'fc_cards',
+    API_KEY: 'fc_apiKey',
+    LANG: 'fc_lang',
+    SEP: 'fc_sep',
+    THEME: 'fc_theme'
+};
+
+// --- LOCALIZATION DICTIONARY ---
+const translations = {
+    ky: {
+        share: "Бөлүшүү",
+        welcome_title: "Кош келиңиз!",
+        welcome_desc: "Баштоо үчүн өзүңүздүн карталарыңызды түзүңүз же даяр топтомун жүктөңүз.",
+        load_demo: "Демо жүктө",
+        tab_file: "Файл",
+        tab_text: "Текст",
+        tab_editor: "Редактор",
+        upload_title: "Файлды жүктөө",
+        btn_choose_file: "Файлды тандоо",
+        
+        label_separator: "Бөлгүч",
+        format_hint: "Текст киргизиңиз. Суроо менен жоопту бөлүүчү белгини жазыңыз.",
+        sep_custom: "Башка",
+        
+        btn_process: "Иштеп чыгуу",
+        btn_create: "Түзүү",
+        ai_generating: "Суроолор түзүлүүдө...",
+        all_cards: "Бардык карталар",
+        btn_add: "Кошуу",
+        deck_ready: "Топтом даяр!",
+        cards_count: "Карталардын саны",
+        btn_study: "Окуу",
+        btn_exam: "Экзамен",
+        label_question: "Суроо",
+        label_answer: "Жооп",
+        btn_hint: "Кеңеш",
+        btn_explain: "Түшүндүрүү",
+        btn_show_answer: "Жоопту көрүү",
+        exam_title: "Экзамен",
+        exam_subtitle: "Билетти тандаңыз.",
+        label_count: "Саны:",
+        btn_shuffle: "Аралаштыруу",
+        btn_exit: "Чыгуу",
+        api_title: "API Жөндөөлөрү",
+        btn_cancel: "Жокко чыгаруу",
+        btn_save: "Сактоо",
+        share_title: "Шилтеме",
+        btn_close: "Жабуу",
+        btn_copy: "Көчүрүү",
+        
+        alert_empty_list: "Тизме бош.",
+        alert_fill_fields: "Бардык талааларды толтуруңуз",
+        ticket: "Билет",
+        btn_peek: "Жоопту көрүү",
+        btn_hide: "Суроого кайтуу",
+        btn_clear: "Баарын өчүрүү",
+        confirm_clear: "Баардык карталарды өчүрүүнү каалайсызбы?",
+        
+        // Toast
+        alert_error: "Ката",
+        alert_success: "Ийгилик",
+        quota_exceeded: "Эс тутум толду! Кээ бир карталарды өчүрүңүз.",
+        click_to_flip: "Картаны буруш үчүн чыкылдатыңыз",
+        search_placeholder: "Карталарды издөө...",
+        search_no_results: "Эч нерсе табылган жок",
+        confirm_delete: "Бул картаны өчүрүүнү каалайсызбы?"
+    },
+    ru: {
+        share: "Поделиться",
+        welcome_title: "Добро пожаловать!",
+        welcome_desc: "Создайте свои карточки или загрузите готовый набор, чтобы начать.",
+        load_demo: "Загрузить Демо",
+        tab_file: "Файл",
+        tab_text: "Текст",
+        tab_editor: "Редактор",
+        upload_title: "Загрузить файл",
+        btn_choose_file: "Выбрать файл",
+        
+        label_separator: "Разделитель",
+        format_hint: "Введите текст. Разделитель отделяет вопрос от ответа.",
+        sep_custom: "Другой",
+        
+        btn_process: "Обработать",
+        btn_create: "Создать",
+        ai_generating: "Генерация вопросов...",
+        all_cards: "Все карточки",
+        btn_add: "Добавить",
+        deck_ready: "Набор готов!",
+        cards_count: "Количество карт",
+        btn_study: "Учить",
+        btn_exam: "Экзамен",
+        label_question: "Вопрос",
+        label_answer: "Ответ",
+        btn_hint: "Подсказка",
+        btn_explain: "Объяснить",
+        btn_show_answer: "Показать ответ",
+        exam_title: "Экзамен",
+        exam_subtitle: "Выберите билет.",
+        label_count: "Кол-во:",
+        btn_shuffle: "Перемешать",
+        btn_exit: "Выход",
+        api_title: "Настройки API",
+        btn_cancel: "Отмена",
+        btn_save: "Сохранить",
+        share_title: "Ссылка",
+        btn_close: "Закрыть",
+        btn_copy: "Копировать",
+        
+        alert_empty_list: "Список пуст.",
+        alert_fill_fields: "Заполните оба поля",
+        ticket: "Билет",
+        btn_peek: "Показать ответ",
+        btn_hide: "Вернуть вопрос",
+        btn_clear: "Удалить все",
+        confirm_clear: "Вы уверены, что хотите удалить все карточки?",
+
+        // Toast
+        alert_error: "Ошибка",
+        alert_success: "Успешно",
+        quota_exceeded: "Память переполнена! Удалите часть карточек.",
+        click_to_flip: "Нажмите, чтобы перевернуть",
+        search_placeholder: "Поиск карточек...",
+        search_no_results: "Ничего не найдено",
+        confirm_delete: "Вы уверены, что хотите удалить эту карточку?"
+    },
+    en: {
+        share: "Share",
+        welcome_title: "Welcome!",
+        welcome_desc: "Create your own cards or load a demo set to start.",
+        load_demo: "Load Demo",
+        tab_file: "File",
+        tab_text: "Text",
+        tab_editor: "Editor",
+        upload_title: "Upload File",
+        btn_choose_file: "Choose File",
+        
+        label_separator: "Separator",
+        format_hint: "Enter text. The separator splits question and answer.",
+        sep_custom: "Custom",
+        
+        btn_process: "Process",
+        btn_create: "Create",
+        ai_generating: "Generating questions...",
+        all_cards: "All Cards",
+        btn_add: "Add",
+        deck_ready: "Deck Ready!",
+        cards_count: "Cards count",
+        btn_study: "Study",
+        btn_exam: "Exam",
+        label_question: "Question",
+        label_answer: "Answer",
+        btn_hint: "Hint",
+        btn_explain: "Explain",
+        btn_show_answer: "Show Answer",
+        exam_title: "Exam",
+        exam_subtitle: "Select a ticket.",
+        label_count: "Count:",
+        btn_shuffle: "Shuffle",
+        btn_exit: "Exit",
+        api_title: "API Settings",
+        btn_cancel: "Cancel",
+        btn_save: "Save",
+        share_title: "Link",
+        btn_close: "Close",
+        btn_copy: "Copy",
+        
+        alert_empty_list: "List is empty.",
+        alert_fill_fields: "Fill all fields",
+        ticket: "Ticket",
+        btn_peek: "Show Answer",
+        btn_hide: "Back to Question",
+        btn_clear: "Clear All",
+        confirm_clear: "Are you sure you want to delete all cards?",
+
+        // Toast
+        alert_error: "Error",
+        alert_success: "Success",
+        quota_exceeded: "Storage full! Please delete some cards.",
+        click_to_flip: "Click to flip",
+        search_placeholder: "Search cards...",
+        search_no_results: "No cards found",
+        confirm_delete: "Are you sure you want to delete this card?"
+    }
+};
+
+// --- UTILITIES ---
+
+/**
+ * Централизованный обработчик ошибок
+ */
+const ErrorHandler = {
+    handle: (error, context = '') => {
+        console.error(`[${context}]`, error);
+        
+        let userMessage = ErrorHandler.getUserFriendlyMessage(error);
+        ui.notify(userMessage, 'error');
+        
+        // В продакшене можно отправлять логи на сервер
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            ErrorHandler.logToServer(error, context);
+        }
+    },
+    
+    getUserFriendlyMessage: (error) => {
+        if (typeof error === 'string') return error;
+        
+        const messages = {
+            'QuotaExceededError': ui.getTranslation('quota_exceeded'),
+            'NetworkError': 'Network error. Please check your connection.',
+            'TimeoutError': 'Request timeout. Please try again.',
+            'SyntaxError': 'Invalid data format.',
+            'TypeError': 'An error occurred. Please refresh the page.'
+        };
+        
+        return messages[error.name] || error.message || ui.getTranslation('alert_error');
+    },
+    
+    logToServer: (error, context) => {
+        // Опционально: отправка логов на сервер
+        // fetch('/api/log', { method: 'POST', body: JSON.stringify({error, context}) });
+    }
+};
+
+/**
+ * Валидация карточки
+ */
+const CardValidator = {
+    validate: (card) => {
+        if (!card || typeof card !== 'object') {
+            return 'Card must be an object';
+        }
+        
+        if (!card.question || typeof card.question !== 'string') {
+            return 'Question is required and must be a string';
+        }
+        
+        if (!card.answer || typeof card.answer !== 'string') {
+            return 'Answer is required and must be a string';
+        }
+        
+        const trimmedQ = card.question.trim();
+        const trimmedA = card.answer.trim();
+        
+        if (!trimmedQ || !trimmedA) {
+            return ui.getTranslation('alert_fill_fields');
+        }
+        
+        if (trimmedQ.length > 5000) {
+            return 'Question is too long (max 5000 characters)';
+        }
+        
+        if (trimmedA.length > 10000) {
+            return 'Answer is too long (max 10000 characters)';
+        }
+        
+        return null; // Валидация прошла
+    },
+    
+    validateAll: (cards) => {
+        if (!Array.isArray(cards)) {
+            return { valid: false, error: 'Cards must be an array' };
+        }
+        
+        if (cards.length === 0) {
+            return { valid: false, error: ui.getTranslation('alert_empty_list') };
+        }
+        
+        for (let i = 0; i < cards.length; i++) {
+            const error = CardValidator.validate(cards[i]);
+            if (error) {
+                return { valid: false, error: `Card #${i + 1}: ${error}` };
+            }
+        }
+        
+        return { valid: true };
+    }
+};
+
+/**
+ * Debounce функция
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+/**
+ * Улучшенный API запрос с обработкой ошибок
+ */
+const ApiRequest = {
+    async request(url, options = {}) {
+            // Helpful guard: when running from file:// the browser cannot call server-side PHP.
+            if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+                throw new Error('App is opened via file://. Start a local HTTP server (e.g. `php -S 127.0.0.1:8000 -t .`) and open the app via http:// to enable API calls.');
+            }
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 сек таймаут
+            
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout. Please try again.');
+            }
+            if (!navigator.onLine) {
+                throw new Error('No internet connection');
+            }
+            throw error;
+        }
+    },
+    
+    async post(url, data) {
+        return ApiRequest.request(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+    },
+    
+    async get(url) {
+        return ApiRequest.request(url, { method: 'GET' });
+    }
+};
+
+// --- STATE MANAGEMENT ---
+const state = {
+    cards: [],           
+    examCards: [],       
+    currentIndex: 0,     
+    isFlipped: false,    
+    mode: 'setup',       
+    editingIndex: null,
+    lang: 'ky',
+    separator: '|', // Default separator
+    searchQuery: '' // Для поиска карточек
+};
+
+// --- UI CONTROLLER ---
+const ui = {
+    setLanguage: (lang) => {
+        state.lang = lang;
+        try {
+            localStorage.setItem(STORAGE_KEYS.LANG, lang);
+        } catch(e) { console.error(e); }
+        
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            if (btn.dataset.lang === lang) {
+                btn.classList.add('bg-indigo-600', 'text-white');
+                btn.classList.remove('text-gray-600', 'hover:bg-white');
+            } else {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('text-gray-600', 'hover:bg-white');
+            }
+        });
+
+        const t = translations[lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                    if (el.hasAttribute('placeholder')) el.placeholder = t[key];
+                } else {
+                    el.innerText = t[key];
+                }
+            }
+        });
+        
+        // Update Clear Button text if exists
+        const clearBtn = document.getElementById('clearAllBtn');
+        if(clearBtn) {
+             const span = clearBtn.querySelector('span');
+             if(span) span.innerText = t['btn_clear'];
+        }
+        
+        if (state.mode === 'exam') ui.renderExamBoard();
+        if (state.mode === 'setup') ui.renderEditor();
+    },
+
+    getTranslation: (key) => {
+        return translations[state.lang][key] || key;
+    },
+
+    toggleTheme: () => {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark');
+        
+        if (isDark) {
+            html.classList.remove('dark');
+            localStorage.setItem(STORAGE_KEYS.THEME, 'light');
+            document.getElementById('theme-icon-light').classList.remove('hidden');
+            document.getElementById('theme-icon-dark').classList.add('hidden');
+        } else {
+            html.classList.add('dark');
+            localStorage.setItem(STORAGE_KEYS.THEME, 'dark');
+            document.getElementById('theme-icon-light').classList.add('hidden');
+            document.getElementById('theme-icon-dark').classList.remove('hidden');
+        }
+    },
+
+    initTheme: () => {
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+        const html = document.documentElement;
+        const isDark = savedTheme === 'dark';
+        
+        if (isDark) {
+            html.classList.add('dark');
+            const lightIcon = document.getElementById('theme-icon-light');
+            const darkIcon = document.getElementById('theme-icon-dark');
+            if (lightIcon) lightIcon.classList.add('hidden');
+            if (darkIcon) darkIcon.classList.remove('hidden');
+        }
+    },
+
+    // TOAST NOTIFICATION SYSTEM
+    notify: (message, type = 'info') => {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        
+        // Base styles
+        let bgClass = 'bg-gray-800 text-white';
+        if (type === 'error') bgClass = 'bg-red-500 text-white';
+        if (type === 'success') bgClass = 'bg-green-600 text-white';
+
+        toast.className = `${bgClass} px-6 py-3 rounded-xl shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 flex items-center gap-3 min-w-[200px]`;
+        toast.innerHTML = `
+            <span class="font-medium text-sm">${message}</span>
+        `;
+        
+        container.appendChild(toast);
+
+        // Animate in
+        requestAnimationFrame(() => {
+            toast.classList.remove('translate-y-10', 'opacity-0');
+        });
+
+        // Remove after 3s
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    },
+
+    setSeparator: (val) => {
+        // Set the separator value in state
+        state.separator = val;
+        try { localStorage.setItem(STORAGE_KEYS.SEP, val); } catch(e) {}
+
+        const input = document.getElementById('customSeparator');
+
+        // Update Buttons UI: highlight matching button, or highlight custom input if no button matches
+        let matched = false;
+        document.querySelectorAll('.sep-btn').forEach(btn => {
+            if (btn.dataset.val === val) {
+                btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                btn.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+                matched = true;
+            } else {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                btn.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+            }
+        });
+
+        // If a predefined button wasn't matched, treat as custom: update input value and style
+        if (!matched) {
+            if (input) input.value = val;
+            input.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+            input.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+        } else {
+            if (input) {
+                input.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                input.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+            }
+        }
+    },
+
+    switchTab: (tabId) => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            const isActive = b.dataset.tab === tabId;
+            
+            // Удаляем все классы цветов
+            b.classList.remove('bg-white', 'text-indigo-600', 'dark:text-indigo-400', 'text-gray-600', 'dark:text-gray-400', 'shadow-sm');
+            
+            if (isActive) {
+                // Активная вкладка
+                b.classList.add('bg-white', 'dark:bg-gray-800', 'text-indigo-600', 'dark:text-indigo-400', 'shadow-sm');
+            } else {
+                // Неактивная вкладка
+                b.classList.add('text-gray-600', 'dark:text-gray-400');
+            }
+        });
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+        if (tabId === 'editor') ui.renderEditor();
+    },
+
+    toggleApiKeyModal: () => {
+        const el = document.getElementById('apiModal');
+        el.classList.toggle('hidden');
+        if (!el.classList.contains('hidden')) {
+            // Query server to see if AI key is configured
+            const input = document.getElementById('userApiKey');
+            input.value = '';
+            input.disabled = true;
+            input.placeholder = ui.getTranslation('ai_generating');
+            fetch(`${API_ENDPOINT}?action=ai_status`).then(r => r.json()).then(json => {
+                if (json.ai_enabled) {
+                    input.placeholder = json.source ? `Configured on server (${json.source})` : 'Configured on server';
+                } else {
+                    input.placeholder = 'Not configured on server';
+                }
+            }).catch(() => { input.placeholder = 'Status unknown'; });
+        }
+    },
+
+    toggleEditorModal: (show) => {
+        const el = document.getElementById('editorModal');
+        if (show) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+    },
+
+    hideAIResponse: () => {
+        document.getElementById('aiResponseBox').classList.add('hidden');
+        document.getElementById('aiResponseText').innerHTML = '';
+    },
+
+    copyShareLink: () => {
+        const text = document.getElementById('shareUrlText').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector('#shareModal button:last-child');
+            const originalText = btn.innerText;
+            btn.innerText = 'OK!';
+            setTimeout(() => btn.innerText = originalText, 2000);
+            ui.notify(ui.getTranslation('alert_success'), 'success');
+        });
+    },
+
+    // REFACTORED: SAFE EDITOR RENDERING (Prevent XSS)
+    renderEditor: () => {
+        // --- 1. Inject Search Input and Clear Button (Dynamic) ---
+        const headerDiv = document.querySelector('#tab-editor .flex.justify-between');
+        if (headerDiv && !document.getElementById('editorSearchInput')) {
+            // Search Input
+            const searchContainer = document.createElement('div');
+            searchContainer.className = 'flex-1 mr-4';
+            const searchInput = document.createElement('input');
+            searchInput.id = 'editorSearchInput';
+            searchInput.type = 'text';
+            searchInput.placeholder = ui.getTranslation('search_placeholder') || 'Search cards...';
+            searchInput.className = 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors duration-200';
+            searchInput.value = state.searchQuery || '';
+            searchInput.oninput = (e) => {
+                state.searchQuery = e.target.value.toLowerCase();
+                ui.renderEditor();
+            };
+            searchContainer.appendChild(searchInput);
+            headerDiv.insertBefore(searchContainer, headerDiv.firstChild);
+            
+            // Clear Button
+            const clearBtn = document.createElement('button');
+            clearBtn.id = 'clearAllBtn';
+            clearBtn.className = 'text-sm bg-red-50 text-red-600 border border-red-100 px-3 py-1.5 rounded-lg hover:bg-red-100 flex items-center gap-1 transition-colors mr-2 ml-auto';
+            clearBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>${ui.getTranslation('btn_clear')}</span>`;
+            clearBtn.onclick = app.clearAllCards;
+            
+            const addBtn = headerDiv.querySelector('button:last-child');
+            headerDiv.insertBefore(clearBtn, addBtn);
+        } else if (document.getElementById('editorSearchInput')) {
+            // Обновить placeholder если язык изменился
+            document.getElementById('editorSearchInput').placeholder = ui.getTranslation('search_placeholder') || 'Search cards...';
+        }
+
+        const list = document.getElementById('editorList');
+        list.innerHTML = '';
+        
+        if (state.cards.length === 0) {
+            list.innerHTML = `<div class="text-center text-gray-400 dark:text-gray-500 py-8">${ui.getTranslation('alert_empty_list')}</div>`;
+            return;
+        }
+
+        // Фильтрация карточек по поисковому запросу
+        const filteredCards = state.searchQuery 
+            ? state.cards.filter((card, idx) => {
+                const q = card.question.toLowerCase();
+                const a = card.answer.toLowerCase();
+                return q.includes(state.searchQuery) || a.includes(state.searchQuery);
+            })
+            : state.cards;
+
+        if (filteredCards.length === 0 && state.searchQuery) {
+            list.innerHTML = `<div class="text-center text-gray-400 dark:text-gray-500 py-8">${ui.getTranslation('search_no_results') || 'No cards found'}</div>`;
+            return;
+        }
+
+        // Создаем карту индексов для правильной работы edit/delete
+        const originalIndices = state.searchQuery 
+            ? filteredCards.map(card => state.cards.indexOf(card))
+            : filteredCards.map((_, idx) => idx);
+
+        filteredCards.forEach((card, filteredIndex) => {
+            const originalIndex = originalIndices[filteredIndex];
+            // Create container
+            const item = document.createElement('div');
+            item.className = 'flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600 hover:border-indigo-200 dark:hover:border-indigo-600 transition-colors group';
+
+            // Create Text Container
+            const textDiv = document.createElement('div');
+            textDiv.className = 'flex-grow min-w-0';
+
+            // Safe Question Text
+            const pQ = document.createElement('p');
+            pQ.className = 'text-sm font-semibold text-gray-800 dark:text-gray-200 truncate select-none';
+            pQ.textContent = card.question; // Safe from XSS
+
+            // Safe Answer Text
+            const pA = document.createElement('p');
+            pA.className = 'text-xs text-gray-500 dark:text-gray-400 truncate select-none';
+            pA.textContent = card.answer; // Safe from XSS
+
+            textDiv.appendChild(pQ);
+            textDiv.appendChild(pA);
+
+            // Create Actions Container
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity';
+
+            // Edit Button
+            const editBtn = document.createElement('button');
+            editBtn.className = 'p-1.5 text-blue-600 hover:bg-blue-100 rounded';
+            editBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>';
+            editBtn.onclick = () => app.editCard(originalIndex);
+
+            // Delete Button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'p-1.5 text-red-600 hover:bg-red-100 rounded';
+            deleteBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+            deleteBtn.onclick = () => app.deleteCard(originalIndex);
+
+            actionsDiv.appendChild(editBtn);
+            actionsDiv.appendChild(deleteBtn);
+
+            item.appendChild(textDiv);
+            item.appendChild(actionsDiv);
+            list.appendChild(item);
+        });
+    },
+
+    renderStudyCard: () => {
+        if(state.cards.length === 0) return;
+        const card = state.cards[state.currentIndex];
+        // textContent is safer here too
+        document.getElementById('cardFront').textContent = card.question;
+        document.getElementById('cardBack').textContent = card.answer;
+        document.getElementById('progressText').textContent = `${state.currentIndex + 1} / ${state.cards.length}`;
+        const cardInner = document.getElementById('cardInner');
+        if(state.isFlipped) cardInner.classList.add('is-flipped');
+        else cardInner.classList.remove('is-flipped');
+        ui.hideAIResponse();
+    },
+
+    renderExamBoard: () => {
+        const grid = document.getElementById('examGrid');
+        grid.innerHTML = '';
+        state.examCards.forEach((card, index) => {
+            const container = document.createElement('div');
+            container.id = `exam-card-container-${index}`;
+            container.className = 'w-full aspect-[4/3] perspective-1000 cursor-pointer group relative hover:z-50 transition-all duration-300';
+            container.onclick = () => app.flipExamTicket(index);
+
+            const inner = document.createElement('div');
+            inner.id = `ticket-${index}`;
+            inner.className = 'exam-ticket relative w-full h-full transform-style-3d shadow-md rounded-xl bg-white dark:bg-gray-800';
+
+            const front = document.createElement('div');
+            front.className = 'absolute w-full h-full backface-hidden bg-white dark:bg-gray-800 border-2 border-indigo-100 dark:border-indigo-900/50 rounded-xl flex flex-col items-center justify-center p-4 text-center bg-gradient-to-br from-white to-indigo-50/50 dark:from-gray-800 dark:to-indigo-900/20';
+            front.innerHTML = `
+                <span class="text-xs font-bold text-indigo-300 dark:text-indigo-500 uppercase tracking-widest mb-1">${ui.getTranslation('ticket')}</span>
+                <span class="text-3xl font-black text-indigo-900 dark:text-indigo-400">${index + 1}</span>
+            `;
+
+            const back = document.createElement('div');
+            back.className = 'absolute w-full h-full backface-hidden rotate-y-180 bg-white dark:bg-gray-800 border-2 border-indigo-500 dark:border-indigo-600 rounded-xl flex flex-col p-4 text-center overflow-hidden';
+            
+            const qDiv = document.createElement('div');
+            qDiv.className = 'flex-grow custom-scroll flex flex-col justify-start'; 
+            
+            // Safe creation for Exam Card
+            const pText = document.createElement('p');
+            pText.className = 'exam-text text-sm font-medium text-gray-800 dark:text-gray-100 leading-tight whitespace-pre-wrap my-auto w-full';
+            pText.textContent = card.question; // Safe
+            qDiv.appendChild(pText);
+
+            const controls = document.createElement('div');
+            controls.className = 'mt-2 pt-2 border-t border-gray-100 dark:border-gray-700 flex justify-center items-center gap-3 shrink-0';
+            
+            const peekBtn = document.createElement('button');
+            peekBtn.className = 'text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-50 dark:hover:bg-indigo-900/30 px-3 py-1.5 rounded flex items-center gap-1 transition-colors';
+            peekBtn.innerHTML = ui.getTranslation('btn_peek');
+            
+            peekBtn.onclick = (e) => {
+                e.stopPropagation(); 
+                const isAnswerShown = peekBtn.dataset.shown === 'true';
+                if (isAnswerShown) {
+                    pText.textContent = card.question;
+                    pText.className = 'exam-text text-sm font-medium text-gray-800 dark:text-gray-100 leading-tight whitespace-pre-wrap my-auto w-full';
+                    peekBtn.innerHTML = ui.getTranslation('btn_peek');
+                    peekBtn.dataset.shown = 'false';
+                    back.classList.remove('bg-green-50', 'dark:bg-green-900/20', 'border-green-500', 'dark:border-green-600');
+                    back.classList.add('bg-white', 'dark:bg-gray-800', 'border-indigo-500', 'dark:border-indigo-600');
+                } else {
+                    pText.textContent = card.answer;
+                    pText.className = 'exam-text text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-mono text-xs text-left my-auto w-full';
+                    peekBtn.innerText = ui.getTranslation('btn_hide');
+                    peekBtn.dataset.shown = 'true';
+                    back.classList.remove('bg-white', 'dark:bg-gray-800', 'border-indigo-500', 'dark:border-indigo-600');
+                    back.classList.add('bg-green-50', 'dark:bg-green-900/20', 'border-green-500', 'dark:border-green-600');
+                }
+            };
+
+            const zoomBtn = document.createElement('button');
+            zoomBtn.id = `zoom-btn-${index}`;
+            zoomBtn.className = 'p-1.5 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors';
+            zoomBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>`;
+            
+            // UPDATED: Calls the new Modal Zoom function instead of the old logic
+            zoomBtn.onclick = (e) => { e.stopPropagation(); app.openExamZoom(index); };
+
+            controls.appendChild(peekBtn);
+            controls.appendChild(zoomBtn);
+            back.appendChild(qDiv);
+            back.appendChild(controls);
+            inner.appendChild(front);
+            inner.appendChild(back);
+            container.appendChild(inner);
+            grid.appendChild(container);
+        });
+    }
+};
+
+// --- APP LOGIC ---
+const app = {
+    
+    init: async () => {
+        // Инициализация темы (уже установлена в HTML head, но обновим иконки)
+        ui.initTheme();
+        
+        const savedLang = localStorage.getItem(STORAGE_KEYS.LANG) || 'ky';
+        ui.setLanguage(savedLang);
+
+        // Load saved separator (if any)
+        const savedSep = localStorage.getItem(STORAGE_KEYS.SEP);
+        if (savedSep) state.separator = savedSep;
+        if (savedSep) ui.setSeparator(savedSep);
+
+
+        const hash = window.location.hash;
+        if(hash) {
+            if(hash.startsWith('#id=')) {
+                await app.loadFromServer(hash.substring(4));
+            } else if (hash.startsWith('#data=')) {
+                app.loadFromHash(hash.substring(6));
+            }
+        } else {
+            const savedCards = localStorage.getItem(STORAGE_KEYS.CARDS);
+            if (savedCards) {
+                try {
+                    state.cards = JSON.parse(savedCards);
+                } catch(e) { 
+                    ErrorHandler.handle(e, 'init');
+                }
+            }
+        }
+
+        if(state.cards.length > 0) {
+            app.updateDeckStatus();
+            document.getElementById('welcome-block').classList.add('hidden');
+        } else {
+            document.getElementById('welcome-block').classList.remove('hidden');
+        }
+
+        ui.switchTab('text');
+
+        // Initialize separator UI: attach listener to custom input
+        const custom = document.getElementById('customSeparator');
+        if (custom) {
+            // On input, update state.separator live (debounced)
+            custom.addEventListener('input', debounce((e) => {
+                const val = e.target.value || '';
+                // If empty, revert to default pipe
+                if (val === '') ui.setSeparator('|');
+                else ui.setSeparator(val);
+            }, 250));
+
+            // If initial page shows dot (user typed .) but button highlight is missing, ensure UI reflects state
+            if (state.separator && state.separator !== '|') {
+                ui.setSeparator(state.separator);
+            }
+        }
+        
+        // Инициализация клавиатурных сокращений
+        app.initKeyboardShortcuts();
+    },
+    
+    initKeyboardShortcuts: () => {
+        document.addEventListener('keydown', (e) => {
+            // Игнорировать если пользователь вводит текст
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                // Разрешаем Escape для закрытия модальных окон
+                if (e.key === 'Escape') {
+                    const modals = ['apiModal', 'shareModal', 'editorModal', 'exam-zoom-overlay'];
+                    for (const modalId of modals) {
+                        const modal = document.getElementById(modalId);
+                        if (modal && !modal.classList.contains('hidden')) {
+                            if (modalId === 'editorModal') ui.toggleEditorModal(false);
+                            else if (modalId === 'apiModal') ui.toggleApiKeyModal();
+                            else if (modalId === 'shareModal') document.getElementById('shareModal').classList.add('hidden');
+                            else if (modalId === 'exam-zoom-overlay') app.closeExamZoom();
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+                }
+                // Ctrl+S для сохранения в редакторе
+                if ((e.ctrlKey || e.metaKey) && e.key === 's' && e.target.closest('#editorModal')) {
+                    e.preventDefault();
+                    app.saveEditorCard();
+                    return;
+                }
+                return;
+            }
+            
+            // Режим изучения
+            if (state.mode === 'study') {
+                switch(e.key) {
+                    case ' ': // Space
+                    case 'Enter':
+                        e.preventDefault();
+                        app.flipCard();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        app.nextCard();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        app.prevCard();
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        app.shuffleCards();
+                        break;
+                }
+            }
+            
+            // Режим редактора
+            if (state.mode === 'setup') {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                    e.preventDefault();
+                    app.openAddCardModal();
+                }
+                if (e.key === '/' || (e.ctrlKey && e.key === 'f')) {
+                    e.preventDefault();
+                    const searchInput = document.getElementById('editorSearchInput');
+                    if (searchInput) searchInput.focus();
+                }
+            }
+            
+            // Глобальные сокращения
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                // Переключение языка (циклично)
+                const langs = ['ky', 'ru', 'en'];
+                const currentIndex = langs.indexOf(state.lang);
+                const nextIndex = (currentIndex + 1) % langs.length;
+                ui.setLanguage(langs[nextIndex]);
+            }
+        });
+    },
+
+    saveLocalState: debounce(() => {
+        try {
+            const validation = CardValidator.validateAll(state.cards);
+            if (!validation.valid) {
+                ErrorHandler.handle(new Error(validation.error), 'saveLocalState');
+                return;
+            }
+            localStorage.setItem(STORAGE_KEYS.CARDS, JSON.stringify(state.cards));
+        } catch (e) {
+            ErrorHandler.handle(e, 'saveLocalState');
+        }
+    }, 500),
+
+    loadDemoData: () => {
+        state.cards = [
+            { question: "Flutter деген эмне?", answer: "Бул Google тарабынан жасалган мобилдик тиркемелерди иштеп чыгуу үчүн UI фреймворк." },
+            { question: "Variable (Өзгөрмө) деген эмне?", answer: "Маалыматты сактоо үчүн эс тутумдагы орун (мисалы: int, String)." },
+            { question: "Loop (Цикл) эмне үчүн керек?", answer: "Бир эле кодду көп жолу кайталоо үчүн (мисалы: for, while)." }
+        ];
+        app.updateDeckStatus();
+        app.saveLocalState();
+        document.getElementById('welcome-block').classList.add('hidden');
+        ui.switchTab('editor');
+    },
+
+    loadFromHash: (encoded) => {
+        try {
+            const binaryString = atob(encoded);
+            const jsonString = decodeURIComponent(
+                Array.prototype.map.call(binaryString, function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join('')
+            );
+            state.cards = JSON.parse(jsonString);
+            app.updateDeckStatus();
+            app.saveLocalState();
+            ui.notify(ui.getTranslation('alert_success'), 'success');
+        } catch(e) { 
+            ErrorHandler.handle(e, 'loadFromHash');
+        }
+    },
+
+    saveApiKey: () => {
+        // API key is now stored on the server for security. To enable AI,
+        // set the GEMINI_API_KEY environment variable on the server or create
+        // a readable file named '.gemini_key' in the project root (server only).
+        ui.toggleApiKeyModal();
+        ui.notify('API key moved to server. Configure `GEMINI_API_KEY` on the server.', 'info');
+    },
+
+    handleFileUpload: (input) => {
+        const file = input.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            if (file.name.toLowerCase().endsWith('.json')) app.parseJSON(text);
+            else app.parseCSV(text);
+        };
+        reader.readAsText(file);
+        input.value = '';
+    },
+
+    parseJSON: (text) => {
+        try {
+            const json = JSON.parse(text);
+            let newCards = [];
+            if (Array.isArray(json)) {
+                newCards = json.map(item => ({
+                    question: item.question || item.q || "No Question",
+                    answer: item.answer || item.a || "No Answer"
+                }));
+            }
+            if(newCards.length > 0) {
+                // Валидация новых карточек
+                const validation = CardValidator.validateAll(newCards);
+                if (!validation.valid) {
+                    ErrorHandler.handle(new Error(validation.error), 'parseJSON');
+                    return;
+                }
+                state.cards = [...state.cards, ...newCards];
+                app.saveLocalState();
+                app.updateDeckStatus();
+                ui.switchTab('editor');
+                ui.notify(ui.getTranslation('alert_success'), 'success');
+            } else { 
+                ErrorHandler.handle(new Error('JSON empty'), 'parseJSON');
+            }
+        } catch (e) { 
+            ErrorHandler.handle(e, 'parseJSON');
+        }
+    },
+
+    parseCSV: (text) => {
+        const lines = text.split(/\r?\n/);
+        const newCards = [];
+        let inQuotes = false;
+        lines.forEach(line => {
+            if(!line.trim()) return;
+            let parts = [];
+            if(line.includes('"')) {
+                const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                let current = '';
+                let row = [];
+                for(let i=0; i<line.length; i++) {
+                    const char = line[i];
+                    if(char === '"' && line[i+1] === '"') { current += '"'; i++; }
+                    else if(char === '"') { inQuotes = !inQuotes; }
+                    else if(char === ',' && !inQuotes) { row.push(current.trim()); current = ''; }
+                    else { current += char; }
+                }
+                row.push(current.trim());
+                parts = row;
+            } else { parts = line.split(','); }
+
+            if(parts.length >= 2) {
+                newCards.push({
+                    question: parts[0].replace(/^"|"$/g, ''),
+                    answer: parts[1].replace(/^"|"$/g, '')
+                });
+            }
+        });
+
+        if(newCards.length > 0) {
+            // Валидация новых карточек
+            const validation = CardValidator.validateAll(newCards);
+            if (!validation.valid) {
+                ErrorHandler.handle(new Error(validation.error), 'parseCSV');
+                return;
+            }
+            state.cards = [...state.cards, ...newCards];
+            app.saveLocalState();
+            app.updateDeckStatus();
+            ui.switchTab('editor');
+            ui.notify(ui.getTranslation('alert_success'), 'success');
+        } else { 
+            ErrorHandler.handle(new Error('CSV Error: No valid cards found'), 'parseCSV');
+        }
+    },
+
+    handlePasteProcess: () => {
+        const text = document.getElementById('pasteInput').value;
+        // Use current separator from state; fallback to custom input if empty; default to '|'
+        let separator = state.separator || '';
+        if (!separator) {
+            const customEl = document.getElementById('customSeparator');
+            if (customEl && customEl.value.trim()) separator = customEl.value.trim();
+        }
+        if (!separator) separator = '|';
+
+        if(!text.trim()) return;
+        
+        const lines = text.split(/\r?\n/);
+        const newCards = [];
+        
+        lines.forEach(line => {
+            if(!line.trim()) return;
+            const parts = line.split(separator);
+            
+            if(parts.length >= 2) {
+                const q = parts[0].trim();
+                const a = parts.slice(1).join(separator).trim();
+                
+                if (q && a) {
+                    newCards.push({ question: q, answer: a });
+                }
+            }
+        });
+        
+        if(newCards.length > 0) {
+            // Валидация новых карточек
+            const validation = CardValidator.validateAll(newCards);
+            if (!validation.valid) {
+                ErrorHandler.handle(new Error(validation.error), 'handlePasteProcess');
+                return;
+            }
+            state.cards = [...state.cards, ...newCards];
+            app.saveLocalState();
+            document.getElementById('pasteInput').value = '';
+            app.updateDeckStatus();
+            ui.switchTab('editor');
+            ui.notify(ui.getTranslation('alert_success'), 'success');
+        } else {
+             ErrorHandler.handle(new Error(ui.getTranslation('alert_empty_list')), 'handlePasteProcess');
+        }
+    },
+
+    downloadDeck: (format) => {
+        if (state.cards.length === 0) { ui.notify(ui.getTranslation('alert_empty_list'), 'error'); return; }
+        let content = '', mimeType = '', fileExtension = '';
+        if (format === 'json') {
+            content = JSON.stringify(state.cards, null, 2);
+            mimeType = 'application/json';
+            fileExtension = 'json';
+        } else if (format === 'csv') {
+            content = 'Question,Answer\n';
+            content += state.cards.map(card => {
+                const q = `"${card.question.replace(/"/g, '""')}"`;
+                const a = `"${card.answer.replace(/"/g, '""')}"`;
+                return `${q},${a}`;
+            }).join('\n');
+            mimeType = 'text/csv';
+            fileExtension = 'csv';
+        }
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `flashcards_${new Date().toISOString().slice(0, 10)}.${fileExtension}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    },
+
+    callGemini: async (prompt, system) => {
+        try {
+            const data = await ApiRequest.post(API_ENDPOINT, { action: 'ai', prompt, system });
+            if (!data.success) throw new Error(data.error || 'AI Error');
+            return data.text || '';
+        } catch (error) {
+            ErrorHandler.handle(error, 'callGemini');
+            throw error;
+        }
+    },
+
+    handleAIGenerate: async () => {
+        const topic = document.getElementById('aiTopic').value;
+        if(!topic) return;
+        const btn = document.getElementById('aiBtn');
+        const status = document.getElementById('aiStatus');
+        btn.disabled = true;
+        btn.classList.add('opacity-50');
+        status.classList.remove('hidden');
+
+        try {
+            // Use current separator for AI to generate correctly for user preference
+            const sep = state.separator || '|';
+            const system = `Create 10 flashcards on the topic. Format: "Question ${sep} Answer". Language: same as topic. No numbering.`;
+            const result = await app.callGemini(topic, system);
+            const lines = result.split(/\r?\n/);
+            const newCards = [];
+            lines.forEach(line => {
+                if (!line || !line.trim()) return;
+
+                // Attempt to split by user's separator first, then fallback to common separators
+                let parts = line.split(sep);
+                let usedSep = sep;
+                if (parts.length < 2) {
+                    parts = line.split('|');
+                    usedSep = '|';
+                }
+                if (parts.length < 2) {
+                    parts = line.split('\t');
+                    usedSep = '\t';
+                }
+                if (parts.length < 2) {
+                    const m = line.match(/(.+?)\s*[-:]\s*(.+)/);
+                    if (m) { parts = [m[1], m[2]]; usedSep = m[0].includes('-') ? '-' : ':'; }
+                }
+
+                if (parts.length >= 2) {
+                    const q = parts[0].trim();
+                    const a = parts.slice(1).join(usedSep).trim();
+                    if (q && a) newCards.push({ question: q, answer: a });
+                }
+            });
+            if(newCards.length > 0) {
+                state.cards = [...state.cards, ...newCards];
+                app.saveLocalState();
+                document.getElementById('aiTopic').value = '';
+                app.updateDeckStatus();
+                ui.switchTab('editor');
+                ui.notify(ui.getTranslation('alert_success'), 'success');
+            }
+        } catch(e) { 
+            ErrorHandler.handle(e, 'handleAIGenerate');
+        } 
+        finally {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+            status.classList.add('hidden');
+        }
+    },
+
+    askAI: async (type) => {
+        const card = state.cards[state.currentIndex];
+        const box = document.getElementById('aiResponseBox');
+        const textEl = document.getElementById('aiResponseText');
+        box.classList.remove('hidden');
+        textEl.innerHTML = '<span class="text-gray-400">...</span>';
+        try {
+            const system = type === 'hint' ? "Give a short HINT (1 sentence). Do not give the answer." : "Explain briefly using Markdown.";
+            const prompt = `Question: ${card.question}\nAnswer: ${card.answer}`;
+            const result = await app.callGemini(prompt, system);
+            
+            // SECURITY: Sanitize HTML from Markdown
+            if (typeof DOMPurify !== 'undefined' && typeof marked !== 'undefined') {
+                textEl.innerHTML = DOMPurify.sanitize(marked.parse(result));
+            } else {
+                textEl.textContent = result; // Fallback to safe text
+            }
+            
+        } catch(e) { 
+            ErrorHandler.handle(e, 'askAI');
+            textEl.textContent = ui.getTranslation('alert_error');
+        }
+    },
+
+    openAddCardModal: () => {
+        state.editingIndex = null;
+        document.getElementById('editQuestion').value = "";
+        document.getElementById('editAnswer').value = "";
+        ui.toggleEditorModal(true);
+    },
+    editCard: (index) => {
+        state.editingIndex = index;
+        const card = state.cards[index];
+        document.getElementById('editQuestion').value = card.question;
+        document.getElementById('editAnswer').value = card.answer;
+        ui.toggleEditorModal(true);
+    },
+    saveEditorCard: () => {
+        const q = document.getElementById('editQuestion').value.trim();
+        const a = document.getElementById('editAnswer').value.trim();
+        const card = { question: q, answer: a };
+        
+        // Валидация карточки
+        const validation = CardValidator.validate(card);
+        if (validation !== null) {
+            ErrorHandler.handle(new Error(validation), 'saveEditorCard');
+            return;
+        }
+        
+        if (state.editingIndex === null) state.cards.push(card);
+        else state.cards[state.editingIndex] = card;
+        app.saveLocalState();
+        ui.toggleEditorModal(false);
+        ui.renderEditor();
+        app.updateDeckStatus();
+        ui.notify(ui.getTranslation('alert_success'), 'success');
+    },
+    deleteCard: (index) => {
+        if(confirm(ui.getTranslation('confirm_delete') || 'Delete this card?')) {
+            state.cards.splice(index, 1);
+            app.saveLocalState();
+            ui.renderEditor();
+            app.updateDeckStatus();
+            ui.notify(ui.getTranslation('alert_success'), 'success');
+        }
+    },
+    clearAllCards: () => {
+        if (confirm(ui.getTranslation('confirm_clear'))) {
+            state.cards = [];
+            app.saveLocalState();
+            ui.renderEditor();
+            app.updateDeckStatus();
+            ui.notify(ui.getTranslation('alert_success'), 'success');
+        }
+    },
+
+    updateDeckStatus: () => {
+        document.getElementById('cardCount').textContent = state.cards.length;
+        document.getElementById('deckStatus').classList.remove('hidden');
+        document.getElementById('welcome-block').classList.add('hidden');
+    },
+    resetToSetup: () => {
+        state.mode = 'setup';
+        document.getElementById('study-view').classList.add('hidden');
+        document.getElementById('exam-view').classList.add('hidden');
+        document.getElementById('setup-view').classList.remove('hidden');
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+    },
+    startStudy: () => {
+        state.mode = 'study';
+        document.getElementById('setup-view').classList.add('hidden');
+        document.getElementById('study-view').classList.remove('hidden');
+        state.currentIndex = 0;
+        state.isFlipped = false;
+        ui.renderStudyCard();
+    },
+    flipCard: () => { state.isFlipped = !state.isFlipped; ui.renderStudyCard(); },
+    nextCard: () => { state.isFlipped = false; ui.renderStudyCard(); setTimeout(() => { state.currentIndex = (state.currentIndex + 1) % state.cards.length; ui.renderStudyCard(); }, 150); },
+    prevCard: () => { state.isFlipped = false; ui.renderStudyCard(); setTimeout(() => { state.currentIndex = state.currentIndex === 0 ? state.cards.length - 1 : state.currentIndex - 1; ui.renderStudyCard(); }, 150); },
+    shuffleCards: () => { state.isFlipped = false; state.cards.sort(() => Math.random() - 0.5); state.currentIndex = 0; ui.renderStudyCard(); },
+
+    startExam: () => {
+        if(state.cards.length === 0) return;
+        state.mode = 'exam';
+        document.getElementById('setup-view').classList.add('hidden');
+        document.getElementById('exam-view').classList.remove('hidden');
+        document.getElementById('examCountSelect').value = "20";
+        app.reshuffleExam();
+    },
+    reshuffleExam: () => {
+        const count = parseInt(document.getElementById('examCountSelect').value);
+        const shuffled = [...state.cards].sort(() => Math.random() - 0.5);
+        state.examCards = (count === -1) ? shuffled : shuffled.slice(0, count);
+        ui.renderExamBoard();
+    },
+    flipExamTicket: (index) => { document.getElementById(`ticket-${index}`).classList.toggle('is-flipped'); },
+    
+    // NEW: Open specific card in a full-screen "Study Mode" style overlay
+    openExamZoom: (index) => {
+        const card = state.examCards[index];
+
+        // 1. Create Overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'exam-zoom-overlay';
+        overlay.className = 'fixed inset-0 z-[99999] bg-gray-900/90 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 fade-in';
+        
+        // Close on background click
+        overlay.onclick = (e) => { 
+            if(e.target === overlay) app.closeExamZoom(); 
+        };
+
+        // 2. Create Content Structure (The Study Card)
+        const contentContainer = document.createElement('div');
+        contentContainer.className = 'relative w-full max-w-4xl aspect-[3/2] perspective-1000 group';
+
+        // Close Button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'absolute -top-12 right-0 text-white hover:text-gray-200 z-50 p-2';
+        closeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        closeBtn.onclick = app.closeExamZoom;
+        contentContainer.appendChild(closeBtn);
+
+        // 3D Card Inner
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner relative w-full h-full transform-style-3d shadow-2xl rounded-2xl transition-all duration-500 cursor-pointer';
+        cardInner.onclick = () => cardInner.classList.toggle('is-flipped');
+
+        // --- FRONT (Question) ---
+        const front = document.createElement('div');
+        front.className = 'absolute w-full h-full backface-hidden bg-white dark:bg-gray-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-colors duration-200';
+        
+        const frontLabel = document.createElement('span');
+        frontLabel.className = 'absolute top-6 left-6 text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded';
+        frontLabel.textContent = `${ui.getTranslation('ticket')} ${index + 1}`;
+        
+        const frontTextContainer = document.createElement('div');
+        frontTextContainer.className = 'overflow-y-auto custom-scroll max-h-full w-full flex items-center justify-center px-4';
+        
+        const frontText = document.createElement('p');
+        frontText.className = 'text-2xl md:text-3xl font-medium text-gray-800 dark:text-gray-100 leading-snug';
+        frontText.textContent = card.question; // Safe
+        
+        const frontHint = document.createElement('p');
+        frontHint.className = 'text-xs text-gray-400 dark:text-gray-500 mt-4 absolute bottom-4';
+        frontHint.textContent = ui.getTranslation('click_to_flip');
+
+        frontTextContainer.appendChild(frontText);
+        front.appendChild(frontLabel);
+        front.appendChild(frontTextContainer);
+        front.appendChild(frontHint);
+
+
+        // --- BACK (Answer) ---
+        const back = document.createElement('div');
+        back.className = 'absolute w-full h-full backface-hidden rotate-y-180 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl p-8 flex flex-col items-center justify-center text-center border-2 border-indigo-200 dark:border-indigo-800 transition-colors duration-200';
+
+        const backLabel = document.createElement('span');
+        backLabel.className = 'absolute top-6 left-6 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase bg-white dark:bg-gray-800 px-2 py-1 rounded border border-indigo-100 dark:border-indigo-800';
+        backLabel.textContent = ui.getTranslation('label_answer');
+
+        const backTextContainer = document.createElement('div');
+        backTextContainer.className = 'overflow-y-auto custom-scroll max-h-full w-full flex items-center justify-center px-4';
+
+        const backTextDiv = document.createElement('div');
+        backTextDiv.className = 'markdown-body text-lg text-gray-800 dark:text-gray-100 text-center w-full max-w-full';
+        
+        // Render Markdown safely
+        if (typeof DOMPurify !== 'undefined' && typeof marked !== 'undefined') {
+            backTextDiv.innerHTML = DOMPurify.sanitize(marked.parse(card.answer));
+        } else {
+            backTextDiv.textContent = card.answer;
+        }
+
+        backTextContainer.appendChild(backTextDiv);
+        back.appendChild(backLabel);
+        back.appendChild(backTextContainer);
+
+        // Assemble
+        cardInner.appendChild(front);
+        cardInner.appendChild(back);
+        contentContainer.appendChild(cardInner);
+        overlay.appendChild(contentContainer);
+
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden'; // Stop background scroll
+    },
+
+    closeExamZoom: () => {
+        const overlay = document.getElementById('exam-zoom-overlay');
+        if(overlay) {
+            overlay.remove();
+            document.body.style.overflow = ''; // Restore scroll
+        }
+    },
+
+    saveToServer: async () => {
+        try {
+            if (window.location.protocol === 'file:') return null;
+            
+            // Валидация перед отправкой
+            const validation = CardValidator.validateAll(state.cards);
+            if (!validation.valid) {
+                ErrorHandler.handle(new Error(validation.error), 'saveToServer');
+                return null;
+            }
+            
+            const data = await ApiRequest.post(API_ENDPOINT, state.cards);
+            return data.id || null;
+        } catch (e) { 
+            ErrorHandler.handle(e, 'saveToServer');
+            return null;
+        }
+    },
+    loadFromServer: async (id) => {
+        try {
+            const data = await ApiRequest.get(`${API_ENDPOINT}?id=${id}`);
+            if (Array.isArray(data)) {
+                // Валидация загруженных данных
+                const validation = CardValidator.validateAll(data);
+                if (!validation.valid) {
+                    ErrorHandler.handle(new Error(validation.error), 'loadFromServer');
+                    return;
+                }
+                state.cards = data;
+                app.saveLocalState();
+                app.updateDeckStatus();
+                app.startStudy();
+                ui.notify(ui.getTranslation('alert_success'), 'success');
+            }
+        } catch (e) { 
+            ErrorHandler.handle(e, 'loadFromServer');
+        }
+    },
+    shareDeck: async () => {
+        if(state.cards.length === 0) { ui.notify(ui.getTranslation('alert_empty_list'), 'error'); return; }
+        const btnText = document.getElementById('shareUrlText');
+        btnText.textContent = "Loading...";
+        document.getElementById('shareModal').classList.remove('hidden');
+        const serverId = await app.saveToServer();
+        let url = "";
+        if (serverId) {
+            url = `${window.location.origin}${window.location.pathname}#id=${serverId}`;
+        } else {
+            // Inform user server save failed and we fallback to encoded URL
+            ui.notify('Server save failed, using encoded deck in URL', 'error');
+            const json = JSON.stringify(state.cards);
+            const encoded = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
+            url = `${window.location.origin}${window.location.pathname}#data=${encoded}`;
+        }
+        btnText.textContent = url;
+    }
+};
+
+window.addEventListener('load', app.init);
